@@ -189,7 +189,7 @@
 
 <footer class="footer">
     <div class="container">
-        <p>© 2003–2025 Свердловское региональное отделение МАНЭБ</p>
+        <p>© 2003–<span Id="currentYear"></span> Свердловское региональное отделение МАНЭБ</p>
         <p style="font-size: 12px;">ИНН 6671132221 КПП 667101001</p>
     </div>
 </footer>
@@ -350,5 +350,11 @@
         });
     }
 </script>
+    <script>
+    // Автоматическое обновление года
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
 </body>
 </html>
