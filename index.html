@@ -91,35 +91,64 @@ max-width: 1200px; margin: 0 auto; padding: 0 24px;
         .form-status.error { background: #fee2e2; color: #c2410c; }
         .btn-submit { width: 100%; background: #0b3b2a; color: white; padding: 12px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; }
         
-      @media (max-width: 768px) {
-    .burger { 
+  @media (max-width: 768px) {
+    /* Кнопка бургера — строго вверху */
+    .burger {
         display: block;
         position: fixed;
-        top: 15px;
-        right: 20px;
+        top: 0;
+        right: 0;
         z-index: 1001;
         background: #0b3b2a;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
+        width: 56px;
+        height: 56px;
         font-size: 28px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        border: none;
+        color: white;
+        cursor: pointer;
     }
-    .header-right .btn-request { display: none; }
-    .nav-wrapper { 
+
+    /* Скрываем обычную кнопку в шапке */
+    .header-right .btn-request {
+        display: none;
+    }
+
+    /* Меню, которое выезжает */
+    .nav-wrapper {
         display: none;
         position: fixed;
-        top: 70px;
+        top: 56px;
         left: 0;
         width: 100%;
         z-index: 1000;
+        background: #1e5a3c;
     }
-    .nav-wrapper.show { display: block; }
-    .nav { flex-direction: column; align-items: center; gap: 15px; padding: 20px; }
-    .contacts-grid { grid-template-columns: 1fr; padding: 25px; }
-    .hero h2 { font-size: 1.6rem; }
-    .section-title { font-size: 1.6rem; }
+
+    .nav-wrapper.show {
+        display: block;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .contacts-grid {
+        grid-template-columns: 1fr;
+        padding: 25px;
+    }
+
+    .hero h2 {
+        font-size: 1.6rem;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
 }
+        
 </style>
 </head>
 <body>
