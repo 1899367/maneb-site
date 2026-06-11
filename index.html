@@ -411,64 +411,77 @@
             cursor: pointer;
         }
 
-        @media (max-width: 768px) {
-            .burger {
-                display: block;
-                position: fixed;
-                top: 0;
-                right: 0;
-                z-index: 1001;
-                background: #0b3b2a;
-                width: 56px;
-                height: 56px;
-                font-size: 28px;
-                border: none;
-                color: white;
-                cursor: pointer;
-            }
+    @media (max-width: 768px) {
+    /* Шапка — не фиксированная, нормальная */
+    .header {
+        position: relative;
+        padding: 10px 0;
+    }
+    
+    /* Бургер-кнопка */
+    .burger {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 1001;
+        background: #0b3b2a;
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        font-size: 24px;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
 
-            /*Кнопка "Оставить заявку" - приклеена слева вверху*/
-            .header-right {
-                position: fixed; 
-                top: 0;
-                left: 0:
-            z-index: 1002;
-                padding: 10px; 
-                
-            .header-right .btn-request {
-               front-size: 0.8rem;
-                padding: 6px 12px;
-                white-space: nowrap;
-            }
-            .nav-wrapper {
-                display: none;
-                position: fixed;
-                top: 56px;
-                left: 0;
-                width: 100%;
-                z-index: 1000;
-                background: #1e5a3c;
-            }
-            .nav-wrapper.show {
-                display: block;
-            }
-            .nav {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                padding: 20px;
-            }
-            .contacts-grid {
-                grid-template-columns: 1fr;
-                padding: 25px;
-            }
-            .hero h2 {
-                font-size: 1.6rem;
-            }
-            .section-title {
-                font-size: 1.6rem;
-            }
-        }
+    /* Кнопка «Оставить заявку» — внутри шапки, не фиксированная */
+    .header-right {
+        position: static;
+    }
+    .header-right .btn-request {
+        display: inline-block;
+        font-size: 0.75rem;
+        padding: 6px 12px;
+    }
+
+    /* Меню — выезжает слева, занимает 70% экрана */
+    .nav-wrapper {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 70%;
+        height: 100%;
+        z-index: 1000;
+        background: #1e5a3c;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+    }
+    .nav-wrapper.show {
+        display: block;
+    }
+    .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 70px 25px 25px;
+    }
+    .nav a {
+        font-size: 1.2rem;
+    }
+
+    /* Контакты */
+    .contacts-grid {
+        grid-template-columns: 1fr;
+        padding: 25px;
+    }
+    .hero h2 {
+        font-size: 1.4rem;
+    }
+    .section-title {
+        font-size: 1.4rem;
+    }
+}
     </style>
 </head>
 <body>
