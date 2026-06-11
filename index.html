@@ -412,67 +412,94 @@
         }
 
     @media (max-width: 768px) {
-    /* Шапка — не фиксированная, нормальная */
-    .header {
-        position: relative;
-        padding: 10px 0;
-    }
-    
-    /* Бургер-кнопка */
+    /* Бургер-кнопка — справа вверху */
     .burger {
         display: block;
-        position: absolute;
-        top: 15px;
+        position: fixed;
+        top: 10px;
         right: 15px;
-        z-index: 1001;
+        z-index: 1002;
         background: #0b3b2a;
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
         border-radius: 8px;
-        font-size: 24px;
+        font-size: 26px;
         border: none;
         color: white;
         cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* Кнопка «Оставить заявку» — СКРЫТА на телефоне */
+    /* Контейнер кнопки заявки — приклеиваем справа, но ниже бургера */
+    .header-right {
+        position: fixed;
+        top: 66px;   /* чтобы не налезала на бургер */
+        right: 15px;
+        z-index: 1001;
+    }
+
+    /* Сама кнопка заявки */
     .header-right .btn-request {
-        display: none;
+        display: inline-block;
+        background: #ffb703;
+        color: #0b3b2a;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 0.8rem;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* Меню — выезжает слева, занимает 70% экрана */
+    /* Шапка — убираем, чтобы не дублировалась */
+    .header {
+        position: relative;
+        padding: 12px 0;
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+    }
+
+    /* Меню */
     .nav-wrapper {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
-        width: 70%;
+        width: 75%;
         height: 100%;
         z-index: 1000;
         background: #1e5a3c;
         box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+        overflow-y: auto;
     }
+
     .nav-wrapper.show {
         display: block;
     }
+
     .nav {
         flex-direction: column;
         align-items: flex-start;
         gap: 20px;
-        padding: 70px 25px 25px;
+        padding: 70px 25px 30px;
     }
+
     .nav a {
         font-size: 1.2rem;
     }
 
-    /* Контакты */
     .contacts-grid {
         grid-template-columns: 1fr;
         padding: 25px;
     }
+
     .hero h2 {
         font-size: 1.4rem;
     }
+
     .section-title {
         font-size: 1.4rem;
     }
