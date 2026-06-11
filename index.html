@@ -412,38 +412,36 @@
         }
 
     @media (max-width: 768px) {
-    /* Бургер-кнопка — справа вверху */
+    /* Кнопка меню (бургер) — всегда справа вверху */
     .burger {
         display: block;
         position: fixed;
-        top: 10px;
+        top: 15px;
         right: 15px;
-        z-index: 1002;
+        z-index: 9999;
         background: #0b3b2a;
         width: 48px;
         height: 48px;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 26px;
         border: none;
         color: white;
         cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
 
-    /* Контейнер кнопки заявки — приклеиваем справа, но ниже бургера */
+    /* Кнопка «Оставить заявку» — справа, под бургером */
     .header-right {
         position: fixed;
-        top: 66px;   /* чтобы не налезала на бургер */
+        top: 70px;
         right: 15px;
-        z-index: 1001;
+        z-index: 9998;
     }
-
-    /* Сама кнопка заявки */
     .header-right .btn-request {
         display: inline-block;
         background: #ffb703;
         color: #0b3b2a;
-        padding: 6px 14px;
+        padding: 8px 16px;
         border-radius: 30px;
         font-weight: bold;
         font-size: 0.8rem;
@@ -453,16 +451,13 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* Шапка — убираем, чтобы не дублировалась */
+    /* Шапка — нормальная, не фиксированная, уезжает при прокрутке */
     .header {
         position: relative;
-        padding: 12px 0;
-        opacity: 0;
-        height: 0;
-        overflow: hidden;
+        padding: 15px 0;
     }
 
-    /* Меню */
+    /* Меню — выезжает слева */
     .nav-wrapper {
         display: none;
         position: fixed;
@@ -470,36 +465,32 @@
         left: 0;
         width: 75%;
         height: 100%;
-        z-index: 1000;
+        z-index: 10000;
         background: #1e5a3c;
         box-shadow: 2px 0 12px rgba(0,0,0,0.3);
         overflow-y: auto;
     }
-
     .nav-wrapper.show {
         display: block;
     }
-
     .nav {
         flex-direction: column;
         align-items: flex-start;
         gap: 20px;
-        padding: 70px 25px 30px;
+        padding: 80px 25px 30px;
     }
-
     .nav a {
         font-size: 1.2rem;
+        color: white;
     }
 
     .contacts-grid {
         grid-template-columns: 1fr;
         padding: 25px;
     }
-
     .hero h2 {
         font-size: 1.4rem;
     }
-
     .section-title {
         font-size: 1.4rem;
     }
