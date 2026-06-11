@@ -234,211 +234,190 @@ max-width: 1200px; margin: 0 auto; padding: 0 24px;
     </div>
 </div>
 
-<script>
-    // === БУРГЕР-МЕНЮ (работает всегда) ===
-    const burger = document.getElementById('burgerBtn');
-    const navWrapper = document.getElementById('navWrapper');
+// === БУРГЕР-МЕНЮ (работает везде) ===
+const burger = document.getElementById('burgerBtn');
+const navWrapper = document.getElementById('navWrapper');
 
-    if (burger && navWrapper) {
-        // Открытие/закрытие по кнопке
-        burger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            navWrapper.classList.toggle('show');
+if (burger && navWrapper) {
+    burger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        navWrapper.classList.toggle('show');
+    });
+
+    // Закрытие при клике на ссылку в меню
+    navWrapper.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navWrapper.classList.remove('show');
         });
+    });
 
-        // Закрытие меню при клике на любую ссылку внутри
-        const navLinks = navWrapper.querySelectorAll('a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                navWrapper.classList.remove('show');
-            });
-        });
+    // Закрытие при клике вне меню
+    document.addEventListener('click', function(e) {
+        if (!navWrapper.contains(e.target) && e.target !== burger) {
+            navWrapper.classList.remove('show');
+        }
+    });
+}
 
-        // Закрытие меню при клике вне его (на любое место страницы)
-        document.addEventListener('click', function(event) {
-            if (!navWrapper.contains(event.target) && !burger.contains(event.target)) {
-                navWrapper.classList.remove('show');
-            }
-        });
-    }
-
-    // === ПЛАВНАЯ ПРОКРУТКА ===
-    document.querySelectorAll('.nav a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+// === ПЛАВНАЯ ПРОКРУТКА ===
+document.querySelectorAll('.nav a, .footer a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href.startsWith('#')) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
             }
-        });
+        }
     });
-
-    // === РАСКРЫВАШКИ (только одна открывается) ===
-    document.querySelectorAll('.expand-btn:not(.btn-disabled)').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const parentExpandable = this.closest('.expandable');
-            if (!parentExpandable) return;
-            const thisContent = parentExpandable.querySelector('.expand-content');
-            if (!thisContent) return;
-            const isOpen = thisContent.classList.contains('show');
-            
-            // Закрываем все блоки
-            document.querySelectorAll('.expand-content').forEach(content => {
-                content.classList.remove('show');
-            });
-            document.querySelectorAll('.expand-btn:not(.btn-disabled)').forEach(button => {
-                button.textContent = 'Подробнее';
-            });
-            
-            // Открываем текущий, если был закрыт
-            if (!isOpen) {
-                thisContent.classList.add('show');
-                this.textContent = 'Скрыть';
-            }
-        });
-    });
-
-    // === МОДАЛКА ДЛЯ ЗАЯВКИ ===
-    const modal = document.getElementById('requestModal');
-    const openModalBtns = document.querySelectorAll('#openModalBtn, #heroOpenModalBtn');
-    const closeModalBtn = document.querySelector('.close-modal');
-
-    openModalBtns.forEach(btn => {
-        if (btn) btn.addEventListener('click', () => modal.style.display = 'flex');
-    });
-    if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
-    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
-
-    // === ОТПРАВКА ЗАЯВКИ НА ПОЧТУ ===
-    const form = document.getElementById('requestForm');
-    const statusDiv = document.getElementById('formStatus');
-    const submitBtn = document.getElementById('submitBtn');
-
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('userName').value.trim();
-            const phone = document.getElementById('userPhone').value.trim();
-            const email = document.getElementById('userEmail').value.trim();
-            const callMe = document.getElementById('callMe').checked ? 'Да' : 'Нет';
-            if (!name || !phone) {
-                statusDiv.innerHTML = '❌ Заполните имя и телефон';
-                statusDiv.className = 'form-status error';
-                return;
-            }
-            statusDiv.innerHTML = '⏳ Отправка...';
-            submitBtn.disabled = true;
-            try {
-                const res = await fetch('https://formsubmit.co/ajax/a.semyachkov@mail.ru', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name, phone, email,
-                        message: `Имя: ${name}\nТелефон: ${phone}\nEmail: ${email}\nПерезвонить: ${callMe}`,
-                        _subject: `Заявка от ${name}`,
-                        _captcha: 'false'
-                    })
-                });
-                if (res.ok) {
-                    statusDiv.innerHTML = '✅ Заявка отправлена! Мы свяжемся с вами.';
-                    statusDiv.className = 'form-status success';
-                    form.reset();
-                    setTimeout(() => { modal.style.display = 'none'; statusDiv.innerHTML = ''; }, 2500);
-                } else throw new Error();
-            } catch (err) {
-                statusDiv.innerHTML = '❌ Ошибка. Позвоните по телефону: +7-912-246-50-51';
-                statusDiv.className = 'form-status error';
-            }
-            submitBtn.disabled = false;
-        });
-    }
-
-    // === ОТЗЫВЫ (localStorage) ===
-    let reviews = [];
-
-    function loadReviews() {
-        const saved = localStorage.getItem('maneb_reviews');
-        if (saved) reviews = JSON.parse(saved);
-        else reviews = [
-            { name: 'ООО "ЭкоСтандарт"', text: 'Профессиональный подход, все работы выполнены в срок. Рекомендуем!', date: '15.01.2025' },
-            { name: 'Иванов Петр', text: 'Помогли с разработкой проекта ПДВ. Очень доволен результатом.', date: '20.02.2025' }
-        ];
-    }
-
-    function saveReviews() {
-        localStorage.setItem('maneb_reviews', JSON.stringify(reviews));
-    }
-
-    function renderReviews() {
-        const container = document.getElementById('reviewsList');
-        if (!container) return;
-        container.innerHTML = '';
-        reviews.slice().reverse().forEach(r => {
-            const div = document.createElement('div');
-            div.className = 'review-card';
-            div.innerHTML = `<div class="review-name">${escapeHtml(r.name)}</div><div class="review-text">${escapeHtml(r.text)}</div><div class="review-date">${r.date}</div>`;
-            container.appendChild(div);
-        });
-        if (reviews.length === 0) container.innerHTML = '<div class="review-card">Пока нет отзывов. Будьте первым!</div>';
-    }
-
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function addReview(name, text) {
-        if (!name.trim() || !text.trim()) return false;
-        const now = new Date();
-        const date = `${now.getDate().toString().padStart(2,'0')}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getFullYear()}`;
-        reviews.push({ name: name.trim(), text: text.trim(), date });
-        saveReviews();
-        renderReviews();
-        return true;
-    }
-
-    loadReviews();
-    renderReviews();
-
-    const submitReview = document.getElementById('submitReviewBtn');
-    const reviewStatus = document.getElementById('reviewStatus');
-    if (submitReview) {
-        submitReview.addEventListener('click', () => {
-            const name = document.getElementById('reviewName').value;
-            const text = document.getElementById('reviewText').value;
-            if (addReview(name, text)) {
-                document.getElementById('reviewName').value = '';
-                document.getElementById('reviewText').value = '';
-                reviewStatus.innerHTML = '✅ Спасибо за отзыв!';
-                reviewStatus.style.color = '#0b3b2a';
-                setTimeout(() => reviewStatus.innerHTML = '', 3000);
-            } else {
-                reviewStatus.innerHTML = '❌ Заполните имя и текст отзыва';
-                reviewStatus.style.color = '#c2410c';
-            }
-        });
-    }
-// === ФИКСАЦИЯ МЕНЮ ПРИ ПРОКРУТКЕ ===
-window.addEventListener('scroll', function() {
-    const nav = document.querySelector('.nav-wrapper');
-    if (window.scrollY > 60) {
-        nav.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-    } else {
-        nav.style.boxShadow = 'none';
-    }
 });
 
-    // === АВТОМАТИЧЕСКИЙ ГОД ===
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
-/* Тень при прокрутке */
-.nav-wrapper.scrolled {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+// === РАСКРЫВАШКИ (только одна открывается) ===
+document.querySelectorAll('.expand-btn:not(.btn-disabled)').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const parentExpandable = this.closest('.expandable');
+        if (!parentExpandable) return;
+        const thisContent = parentExpandable.querySelector('.expand-content');
+        if (!thisContent) return;
+        const isOpen = thisContent.classList.contains('show');
+        
+        document.querySelectorAll('.expand-content').forEach(content => {
+            content.classList.remove('show');
+        });
+        document.querySelectorAll('.expand-btn:not(.btn-disabled)').forEach(button => {
+            button.textContent = 'Подробнее';
+        });
+        
+        if (!isOpen) {
+            thisContent.classList.add('show');
+            this.textContent = 'Скрыть';
+        }
+    });
+});
+
+// === МОДАЛКА ДЛЯ ЗАЯВКИ ===
+const modal = document.getElementById('requestModal');
+const openBtns = document.querySelectorAll('#openModalBtn, #heroOpenModalBtn, #bottomOpenModalBtn');
+const closeModal = document.querySelector('.close-modal');
+
+openBtns.forEach(btn => {
+    if (btn) btn.addEventListener('click', () => modal.style.display = 'flex');
+});
+if (closeModal) closeModal.addEventListener('click', () => modal.style.display = 'none');
+window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+// === ОТПРАВКА ЗАЯВКИ НА ПОЧТУ ===
+const form = document.getElementById('requestForm');
+const statusDiv = document.getElementById('formStatus');
+const submitBtn = document.getElementById('submitBtn');
+
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('userName').value.trim();
+        const phone = document.getElementById('userPhone').value.trim();
+        const email = document.getElementById('userEmail').value.trim();
+        const callMe = document.getElementById('callMe').checked ? 'Да' : 'Нет';
+        
+        if (!name || !phone) {
+            statusDiv.innerHTML = '❌ Заполните имя и телефон';
+            statusDiv.className = 'form-status error';
+            return;
+        }
+        
+        statusDiv.innerHTML = '⏳ Отправка...';
+        submitBtn.disabled = true;
+        
+        try {
+            const res = await fetch('https://formsubmit.co/ajax/a.semyachkov@mail.ru', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name, phone, email,
+                    message: `Имя: ${name}\nТелефон: ${phone}\nEmail: ${email}\nПерезвонить: ${callMe}`,
+                    _subject: `Заявка от ${name}`,
+                    _captcha: 'false'
+                })
+            });
+            if (res.ok) {
+                statusDiv.innerHTML = '✅ Заявка отправлена! Мы свяжемся с вами.';
+                statusDiv.className = 'form-status success';
+                form.reset();
+                setTimeout(() => { modal.style.display = 'none'; statusDiv.innerHTML = ''; }, 2500);
+            } else throw new Error();
+        } catch (err) {
+            statusDiv.innerHTML = '❌ Ошибка. Позвоните по телефону: +7-912-246-50-51';
+            statusDiv.className = 'form-status error';
+        }
+        submitBtn.disabled = false;
+    });
 }
+
+// === ОТЗЫВЫ (localStorage) ===
+let reviews = [];
+
+function loadReviews() {
+    const saved = localStorage.getItem('maneb_reviews');
+    if (saved) reviews = JSON.parse(saved);
+    else reviews = [
+        { name: 'ООО "ЭкоСтандарт"', text: 'Профессиональный подход, все работы выполнены в срок. Рекомендуем!', date: '15.01.2025' },
+        { name: 'Иванов Петр', text: 'Помогли с разработкой проекта ПДВ. Очень доволен результатом.', date: '20.02.2025' }
+    ];
+}
+
+function saveReviews() { localStorage.setItem('maneb_reviews', JSON.stringify(reviews)); }
+function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
+function renderReviews() {
+    const container = document.getElementById('reviewsList');
+    if (!container) return;
+    container.innerHTML = '';
+    reviews.slice().reverse().forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'review-card';
+        div.innerHTML = `<div class="review-name">${escapeHtml(r.name)}</div><div class="review-text">${escapeHtml(r.text)}</div><div class="review-date">${r.date}</div>`;
+        container.appendChild(div);
+    });
+    if (reviews.length === 0) container.innerHTML = '<div class="review-card">Пока нет отзывов. Будьте первым!</div>';
+}
+
+function addReview(name, text) {
+    if (!name.trim() || !text.trim()) return false;
+    const now = new Date();
+    const date = `${now.getDate().toString().padStart(2,'0')}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getFullYear()}`;
+    reviews.push({ name: name.trim(), text: text.trim(), date });
+    saveReviews();
+    renderReviews();
+    return true;
+}
+
+loadReviews();
+renderReviews();
+
+const submitReview = document.getElementById('submitReviewBtn');
+const reviewStatus = document.getElementById('reviewStatus');
+if (submitReview) {
+    submitReview.addEventListener('click', () => {
+        const name = document.getElementById('reviewName').value;
+        const text = document.getElementById('reviewText').value;
+        if (addReview(name, text)) {
+            document.getElementById('reviewName').value = '';
+            document.getElementById('reviewText').value = '';
+            reviewStatus.innerHTML = '✅ Спасибо за отзыв!';
+            reviewStatus.style.color = '#0b3b2a';
+            setTimeout(() => reviewStatus.innerHTML = '', 3000);
+        } else {
+            reviewStatus.innerHTML = '❌ Заполните имя и текст отзыва';
+            reviewStatus.style.color = '#c2410c';
+        }
+    });
+}
+
+// === АВТОМАТИЧЕСКИЙ ГОД ===
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+
 </script>
 </body>
 </html>
